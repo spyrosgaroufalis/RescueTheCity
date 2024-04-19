@@ -394,27 +394,7 @@ let LocationMarker;
 
     
     }
-// Modify the drawPolyline function to handle different types of data
-function drawPolyline(id) {
-    // Fetch data from PHP script and add markers
-    fetch('show_announcements_wanted.php')
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(row => {
-                if (row.id === id) { // Check if the row id matches the provided id
-                    // Get marker position
-                    const markerPosition = L.latLng(row.lat_cit, row.lon_cit);
-                    // Get location marker position
-                    const locationMarkerPosition = LocationMarker.getLatLng();
-                    // Create polyline
-                    const polyline = L.polyline([markerPosition, locationMarkerPosition], { color: 'blue' }).addTo(map);
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
-}
+
 
 
 
@@ -465,31 +445,189 @@ function saveMarkerPositionToDatabase(marker) {
     });
 }
 
-    // Function to generate a random LatLng within a given radius from a center point
-    function getRandomLatLng(center, distance) {
-        const randomAngle = Math.random() * Math.PI * 2;
-        const distanceInDegrees = distance / (111 * 1000); // 1 degree is approximately 111 kilometers
 
-        const deltaX = distanceInDegrees * Math.cos(randomAngle);
-        const deltaY = distanceInDegrees * Math.sin(randomAngle);
 
-        return L.latLng(center.lat + deltaX, center.lng + deltaY);
+
+// Fetch data from PHP script and add markers
+function fetchAndAddMarkers() {
+    const rescuerName = "<?php echo $username; ?>";
+    fetch('get_help_offering_data.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({rescuer_name: rescuerName }), // Include rescuer's name in the request body
+})
+    .then(response => response.json())
+    .then(data => {
+        addHelpOfferingMarkers(data);
+    })
+    .catch(error => {
+        console.error('Error fetching help offering data:', error);
+    });
+}
+// Fetch data from PHP script and add markers
+function fetchAndAddMarkers2() {
+    const rescuerName = "<?php echo $username; ?>";
+    fetch('get_help_offering_data.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({rescuer_name: rescuerName }), // Include rescuer's name in the request body
+})
+    .then(response => response.json())
+    .then(data => {
+        addHelpOfferingMarkers2(data);
+    })
+    .catch(error => {
+        console.error('Error fetching help offering data:', error);
+    });
+}
+
+
+function fetchAndAddReqMarkers() {
+    // Get the rescuer's name
+const rescuerName = "<?php echo $username; ?>";
+        // Fetch data from PHP script and add markers
+        fetch('show_announcements_wanted.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({rescuer_name: rescuerName }), // Include rescuer's name in the request body
+})
+          .then(response => response.json())
+          .then(data => {
+              addAnnouncementMarkers(data);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
     }
+
+    function fetchAndAddVehicleMarkers() {
+        // Fetch data from PHP script and add markers
+        fetch('show_active_vehicles_rescuer.php')
+          .then(response => response.json())
+          .then(data => {
+            addVehicleMarkers(data);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+        }
+
+        function fetchAndAddVehicleMarkers2() {
+            // Fetch data from PHP script and add markers
+            fetch('show_inactive_vehicles_rescuer.php')
+              .then(response => response.json())
+              .then(data => {
+                addVehicleMarkers2(data);
+              })
+              .catch(error => {
+                  console.error('Error fetching data:', error);
+              });
+            }
+
+
+    function fetchAndAddReqMarkers2() {
+
+        // Get the rescuer's name
+const rescuerName = "<?php echo $username; ?>";
+        // Fetch data from PHP script and add markers
+        fetch('show_announcements_wanted.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({rescuer_name: rescuerName }), // Include rescuer's name in the request body
+})
+          .then(response => response.json())
+          .then(data => {
+              addAnnouncementMarkers2(data);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+        }
+
+
+
+
+
 
     
+// Call the function to fetch data and add markers when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    fetchAndAddMarkers();
+    fetchAndAddMarkers2();
+    fetchAndAddReqMarkers();
+    fetchAndAddReqMarkers2();
+    fetchAndAddVehicleMarkers();
+    fetchAndAddVehicleMarkers2();
+});
 
-    // Function to create a vehicle popup content
-    function createVehiclePopup(e, username, cargo, status, hasTasks) {
-        let popupContent = "<b>Vehicles</b><br>";
-        popupContent += "Username: " + username + "<br>";
-        popupContent += "Cargo: " + cargo + "<br>";
-        popupContent += "Status: " + status + "<br>";
-        if (hasTasks) {
-            popupContent += "There are active tasks<br>";
-        }
-        return popupContent;
+// Toggle the visibility of the offers layer group based on user interaction
+function toggleOffersLayer() {
+    if (map.hasLayer(offersLayer)) {
+        map.removeLayer(offersLayer);
+    } else {
+        map.addLayer(offersLayer);
     }
+}
 
+
+
+// Toggle the visibility of the offers layer group based on user interaction
+function toggleReqLayer() {
+    if (map.hasLayer(requestsLayer)) {
+        map.removeLayer(requestsLayer);
+    } else {
+        map.addLayer(requestsLayer);
+       
+    }
+}
+
+// Toggle the visibility of the offers layer group based on user interaction
+function toggleReqLayer2() {
+    if (map.hasLayer(requestsLayer2)) {
+        map.removeLayer(requestsLayer2);
+    } else {
+        map.addLayer(requestsLayer2);
+       
+    }
+}
+
+
+
+// Toggle the visibility of the offers layer group based on user interaction
+function toggleOffersLayer2() {
+    if (map.hasLayer(offersLayer2)) {
+        map.removeLayer(offersLayer2);
+    } else {
+        map.addLayer(offersLayer2);
+    }
+}
+
+// Toggle the visibility of the offers layer group based on user interaction
+function toggleVehicleLayer() {
+    if (map.hasLayer(vehiclesWithTasksLayer)) {
+        map.removeLayer(vehiclesWithTasksLayer);
+    } else {
+        map.addLayer(vehiclesWithTasksLayer);
+    }
+}
+
+// Toggle the visibility of the offers layer group based on user interaction
+function toggleVehicleLayer2() {
+    if (map.hasLayer(vehiclesWithoutTasksLayer)) {
+        map.removeLayer(vehiclesWithoutTasksLayer);
+    } else {
+        map.addLayer(vehiclesWithoutTasksLayer);
+    }
+}
+    
     // Function to handle location error
     function onLocationError(e) {
         alert("Location error: " + e.message);
@@ -511,17 +649,56 @@ function saveMarkerPositionToDatabase(marker) {
 
 // Create layer groups
 const requestsLayer = L.layerGroup();
+const requestsLayer2 = L.layerGroup();
 const offersLayer = L.layerGroup();
+const offersLayer2 = L.layerGroup();
 const vehiclesWithTasksLayer = L.layerGroup();
 const vehiclesWithoutTasksLayer = L.layerGroup();
 const linesLayer = L.layerGroup();
+const linesLayer2 = L.layerGroup();
+
+
+
+// Define a green marker icon
+const greenIcon = L.icon({
+  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+// Define a red marker icon
+const redIcon = L.icon({
+  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+// Define a red marker icon
+const goldIcon = L.icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+
+
 
 /// Function to add markers for announcements
 function addAnnouncementMarkers(data) {
     data.forEach(row => {
         let markerIcon = redIcon; // Default color is red
         if (row.accepted === 'not_expected') {
-            markerIcon = greenIcon;
+           return;
+            // markerIcon = greenIcon;
         }
 
         if (row.accepted === 'expected') {
@@ -536,7 +713,7 @@ function addAnnouncementMarkers(data) {
         fetch(`get_phone_number.php?username=${row.username}`)
             .then(response => response.text())
             .then(phoneNumber => {
-                const marker = L.marker([row.lat_cit, row.lon_cit], { icon: markerIcon }).addTo(map);
+                const marker = L.marker([row.lat_cit, row.lon_cit], { icon: markerIcon });
                 let popupContent = `<br><b>ΑΙΤΗΜΑ:</b><br><b>Username:</b> ${row.username}<br><b>Phone Number:</b> ${phoneNumber}<br><b>Register Date:</b> ${row.have_seen_date}<br><b>Name:</b> ${row.name}<br><b>Number:</b> ${row.numProducts}<br><b>Date of Completion:</b> ${row.date_of_comp}`;
                 // Add button based on accepted status
                 if (row.accepted === 'expected') {
@@ -560,37 +737,89 @@ function addAnnouncementMarkers(data) {
     });
 }
 
+  /// Function to add markers for announcements
+  function addAnnouncementMarkers2(data) {
+    data.forEach(row => {
+        let markerIcon = greenIcon;; // Default color is red
+        if (row.accepted === 'expected') {
+            return;
+        } else if (row.accepted === 'not_expected') {
+            markerIcon = greenIcon; // Red marker for status "not_expected"
+        }
+        else if (row.accepted === 'waiting') {
+         return;
+      }
+  
+        // Fetch phone number from the "user" table based on the username
+        fetch(`get_phone_number.php?username=${row.username}`)
+            .then(response => response.text())
+            .then(phoneNumber => {
+                const marker = L.marker([row.lat_cit, row.lon_cit], { icon: markerIcon });
+                let popupContent = `<br><b>ΑΙΤΗΜΑ:</b><br><b>Username:</b> ${row.username}<br><b>Phone Number:</b> ${phoneNumber}<br><b>Register Date:</b> ${row.have_seen_date}<br><b>Name:</b> ${row.name}<br><b>Number:</b> ${row.numProducts}<br><b>Date of Completion:</b> ${row.date_of_comp}`;
+                // Add button based on accepted status
+                if (row.accepted === 'not_expected') {
+                  popupContent += `<br><b>Rescuer Username:</b> ${row.rescuer_name}`;
+  
+              }
+                
+                marker.bindPopup(popupContent);
+              
+               // Add marker to helpOfferingsLayer
+               marker.addTo(requestsLayer2);
+              })
+               
+  
+            .catch(error => {
+                console.error('Error fetching phone number:', error);
+            });
+    });
+  }
 
 
-// Define a green marker icon
-const greenIcon = L.icon({
-    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+   /// Function to add markers for announcements
+function addVehicleMarkers(data) {
+    data.forEach(row => {
+        let markerIcon = goldIcon; // Default color is red
+        
+  
+        const marker = L.marker([parseFloat(row.latitude), parseFloat(row.longitude)], { icon: markerIcon });
+        
+        // Define popup content with all table info
+        let popupContent = `<br><b>Διασώστης:</b><br><b>Όνοματεπώνυμο:</b> ${row.name}<br><b>Περιεχόμενα:</b> ${row.cargo}<br><b>Κατάσταση:</b> ${row.status}`;
 
-// Define a red marker icon
-const redIcon = L.icon({
-    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+        
 
-// Define a red marker icon
-const goldIcon = L.icon({
-    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+
+        marker.bindPopup(popupContent);
+        marker.addTo(vehiclesWithTasksLayer); // Add marker to the offers layer group
+
+    });
+  }
+
+   /// Function to add markers for announcements
+function addVehicleMarkers2(data) {
+    data.forEach(row => {
+        
+        
+  
+        const marker = L.marker([parseFloat(row.latitude), parseFloat(row.longitude)]);
+        
+        // Define popup content with all table info
+        let popupContent = `<br><b>Διασώστης:</b><br><b>Όνοματεπώνυμο:</b> ${row.name}<br><b>Περιεχόμενα:</b> ${row.cargo}<br><b>Κατάσταση:</b> ${row.status}`;
+
+        
+
+
+        marker.bindPopup(popupContent);
+        marker.addTo(vehiclesWithoutTasksLayer); // Add marker to the offers layer group
+
+    });
+  }
+
+
+
+
+
 
 
 // Define a global variable to track the number of markers taken
@@ -598,11 +827,6 @@ let markersTaken = 0;
 
 // Function to change status from expected to waiting
 function changeStatus(id) {
-    // Check if the maximum number of markers has been taken
-    if (markersTaken >= 4) {
-        alert("You have already taken the maximum number of markers.");
-        return;
-    }
 
 
     // Get the rescuer's name
@@ -664,17 +888,24 @@ function changeStatus(id) {
 function refreshMarkers() {
     // Clear existing markers
     markersLayer.clearLayers();
-    // Fetch data from PHP script and add markers
-    fetch('show_announcements_wanted.php')
-        .then(response => response.json())
-        .then(data => {
-            addAnnouncementMarkers(data);
-            
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-            
-        });
+     // Get the rescuer's name
+const rescuerName = "<?php echo $username; ?>";
+        // Fetch data from PHP script and add markers
+        fetch('show_announcements_wanted.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({rescuer_name: rescuerName }), // Include rescuer's name in the request body
+})
+          .then(response => response.json())
+          .then(data => {
+              addAnnouncementMarkers(data);
+              addAnnouncementMarkers2(data);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
 }
 
 
@@ -684,32 +915,15 @@ function refreshMarkers() {
 
 
 
-// Function to add vehicle markers with tasks
-function addVehicleWithTasksMarker(lat, lng, username, cargo, status) {
-  const marker = L.marker([lat, lng], { title: username });
-  marker.bindPopup(createVehiclePopup(null, username, cargo, status, true));
-  marker.addTo(vehiclesWithTasksLayer);
-}
-
-// Function to add vehicle markers without tasks
-function addVehicleWithoutTasksMarker(lat, lng, username, cargo, status) {
-  const marker = L.marker([lat, lng], { title: username });
-  marker.bindPopup(createVehiclePopup(null, username, cargo, status, false));
-  marker.addTo(vehiclesWithoutTasksLayer);
-}
-
-// Function to add lines
-function addLine(latlngs, color) {
-  const polyline = L.polyline(latlngs, { color: color }).addTo(linesLayer);
-}
 
 
 // Function to add markers for help offerings
 function addHelpOfferingMarkers(data) {
     data.forEach(item => {
-        let customIcon = YellowIcon; // Default color is red
+       
         if (item.accepted === 'received') {
-            customIcon = greenIcon;
+            return;
+            // customIcon = greenIcon;
         
         }
         else if (item.accepted === 'expected') {
@@ -733,11 +947,7 @@ function addHelpOfferingMarkers(data) {
         if (item.accepted === 'expected') {
                     popupContent += `<br><button onclick="changeStatusOffer('${item.id}')">Get onto it</button>`;
                 }
-                if (item.accepted === 'received') {
-                    popupContent += `<br><b>Date of Completion:</b> ${item.date_of_comp}`;
-                    popupContent += `<br><b>Username:</b> ${item.rescuer_name}`;
-
-                }
+                
 
         // Bind popup to marker
         marker.bindPopup(popupContent);
@@ -747,25 +957,40 @@ function addHelpOfferingMarkers(data) {
     });
 }
 
-       // Define a green marker icon
-       const YellowIcon = L.icon({
-    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+// Function to add markers for help offerings
+function addHelpOfferingMarkers2(data) {
+    data.forEach(item => {
+        let customIcon = YellowIcon; // Default color is red
+        if (item.accepted === 'received') {
+            customIcon = GreenIcon; // Green marker for status "expected"
+        }
+        else if (item.accepted === 'expected') {
+           return;
+        }
+        else if (item.accepted === 'waiting') {
+            return;
+        }
 
-// Define a red marker icon
-const PurpleIcon = L.icon({
-    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+        const marker = L.marker([parseFloat(item.latitude), parseFloat(item.longitude)], { icon: customIcon });
+        
+        // Define popup content with all table info
+        let popupContent = `<br><b>ΠΡΟΣΦΟΡΑ:</b><br><b>Όνοματεπώνυμο:</b> ${item.username}<br><b>Τηλέφωνο:</b> ${item.phone_num}<br><b>Ημερομηνία καταχώρησης:</b> ${item.date}<br><b>Όνομα προιόντος:</b> ${item.product_name}<br><b>Απαιτούμενο νούμερο:</b> ${item.product_num}`;
+
+        
+            if (item.accepted === 'received') {
+                    popupContent += `<br><b>Ημερομηνία ανάληψης από όχημα:</b> ${item.date_of_comp}`;
+                    popupContent += `<br><b>Όνομα Διασώστη:</b> ${item.rescuer_name}`;
+
+            }
+
+        marker.bindPopup(popupContent);
+        marker.addTo(offersLayer2); // Add marker to the offers layer group
+    });
+}
+
+
+
+     
 
 
 // Function to change status from expected to waiting
@@ -830,13 +1055,22 @@ function changeStatusOffer(id) {
 
 // Function to refresh markers after status change
 function refreshMarkersOffer() {
+    const rescuerName = "<?php echo $username; ?>";
+
     // Clear existing markers
     markersLayer.clearLayers();
     // Fetch data from PHP script and add markers
-    fetch('show_offerings.php')
+    fetch('show_offerings.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({rescuer_name: rescuerName }), // Include rescuer's name in the request body
+})
         .then(response => response.json())
         .then(data => {
             addHelpOfferingMarkers(data);
+            addHelpOfferingMarkers2(data);
             
         })
         .catch(error => {
@@ -851,83 +1085,172 @@ function refreshMarkersOffer() {
 
 // Add layers to the map
 const layerControl = L.control.layers(null, {
-  'Αιτήματα': requestsLayer,
-  'Προσφορές': offersLayer,
+  'Αιτήματα, αιτήματα ενεργά': requestsLayer,
+  'Αιτήματα ολοκληρωμένα': requestsLayer2,
+  'Προσφορές, προσφορές ενεργές': offersLayer,
+  'Προσφορές ολοκληρωμένες': offersLayer2,
   'Οχήματα με Tasks': vehiclesWithTasksLayer,
   'Οχήματα χωρίς Tasks': vehiclesWithoutTasksLayer,
-  'Ευθείες Γραμμές': linesLayer
+  'Ευθείες Γραμμές Ενεργών Task': linesLayer,
+  'Ευθείες Γραμμές Ολοκληρωμένων Task': linesLayer2,
 }).addTo(map);
 
-// Function to fetch and add markers when 'Αιτήματα' layer is selected
-function onRequestsLayerAdd() {
-    fetch('show_announcements_wanted.php')
-        .then(response => response.json())
-        .then(data => {
-            addAnnouncementMarkers(data);
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
+// Fetch polyline data from the server
+fetch('fetch_polylines.php')
+    .then(response => response.json())
+    .then(data => {
+        // Loop through the polyline data
+        data.forEach(polyline => {
+            // Extract polyline coordinates and other info
+            const startLat = polyline.polyline_start_lat;
+            const startLon = polyline.polyline_start_lon;
+            const endLat = polyline.polyline_end_lat;
+            const endLon = polyline.polyline_end_lon;
+
+            // Create polyline coordinates array
+            const polylineCoords = [
+                [startLat, startLon],
+                [endLat, endLon]
+            ];
+
+            // Create polyline object
+            const polylineObj = L.polyline(polylineCoords).addTo(linesLayer);
+
+            // Add popup with info
+            const popupContent = `<b>Start Info:</b> `;
+            polylineObj.bindPopup(popupContent);
         });
-}
+    })
+    .catch(error => {
+        console.error('Error fetching polyline data:', error);
+    });
 
-// Function to remove markers when 'Αιτήματα' layer is deselected
-function onRequestsLayerRemove() {
-    requestsLayer.clearLayers();
-}
+    // Fetch polyline data from the server
+fetch('fetch_polylines2.php')
+.then(response => response.json())
+.then(data => {
+    // Loop through the polyline data
+    data.forEach(polyline => {
+        // Extract polyline coordinates and other info
+        const startLat = polyline.polyline_start_lat;
+        const startLon = polyline.polyline_start_lon;
+        const endLat = polyline.polyline_end_lat;
+        const endLon = polyline.polyline_end_lon;
 
-// Add event listeners for layer control changes
-map.on('overlayadd', function(eventLayer) {
-    if (eventLayer.name === 'Αιτήματα') {
-        onRequestsLayerAdd();
-    }
+        // Create polyline coordinates array
+        const polylineCoords = [
+            [startLat, startLon],
+            [endLat, endLon]
+        ];
+
+        // Create polyline object
+        const polylineObj = L.polyline(polylineCoords).addTo(linesLayer2);
+
+        // Add popup with info
+        const popupContent = `<b>Start Info:</b> `;
+        polylineObj.bindPopup(popupContent);
+    });
+})
+.catch(error => {
+    console.error('Error fetching polyline data:', error);
+});
+    
+// Add example markers and lines
+
+// Define a green marker icon
+const YellowIcon = L.icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+// Define a green marker icon
+const GreenIcon = L.icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
 });
 
-map.on('overlayremove', function(eventLayer) {
-    if (eventLayer.name === 'Αιτήματα') {
-        onRequestsLayerRemove();
-    }
-});
-
-// Function to fetch and add markers when 'Προσφορές' layer is selected
-function onOffersLayerAdd() {
-    fetch('show_offerings.php')
-        .then(response => response.json())
-        .then(data => {
-            addHelpOfferingMarkers(data);
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
-}
-
-// Function to remove markers when 'Προσφορές' layer is deselected
-function onOffersLayerRemove() {
-    offersLayer.clearLayers();
-}
-
-// Add event listeners for layer control changes
-map.on('overlayadd', function(eventLayer) {
-    if (eventLayer.name === 'Προσφορές') {
-        onOffersLayerAdd();
-    }
-});
-
-map.on('overlayremove', function(eventLayer) {
-    if (eventLayer.name === 'Προσφορές') {
-        onOffersLayerRemove();
-    }
+// Define a red marker icon
+const PurpleIcon = L.icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
 });
 
 
 
 
+// // Function to fetch and add markers when 'Αιτήματα' layer is selected
+// function onRequestsLayerAdd() {
+//     fetch('show_announcements_wanted.php')
+//         .then(response => response.json())
+//         .then(data => {
+//             addAnnouncementMarkers(data);
+//         })
+//         .catch(error => {
+//             console.error('Error fetching data:', error);
+//         });
+// }
+
+// // Function to remove markers when 'Αιτήματα' layer is deselected
+// function onRequestsLayerRemove() {
+//     requestsLayer.clearLayers();
+// }
+
+// // Add event listeners for layer control changes
+// map.on('overlayadd', function(eventLayer) {
+//     if (eventLayer.name === 'Αιτήματα') {
+//         onRequestsLayerAdd();
+//     }
+// });
+
+// map.on('overlayremove', function(eventLayer) {
+//     if (eventLayer.name === 'Αιτήματα') {
+//         onRequestsLayerRemove();
+//     }
+// });
+
+// // Function to fetch and add markers when 'Προσφορές' layer is selected
+// function onOffersLayerAdd() {
+//     fetch('show_offerings.php')
+//         .then(response => response.json())
+//         .then(data => {
+//             addHelpOfferingMarkers(data);
+//         })
+//         .catch(error => {
+//             console.error('Error fetching data:', error);
+//         });
+// }
+
+// // Function to remove markers when 'Προσφορές' layer is deselected
+// function onOffersLayerRemove() {
+//     offersLayer.clearLayers();
+// }
+
+// // Add event listeners for layer control changes
+// map.on('overlayadd', function(eventLayer) {
+//     if (eventLayer.name === 'Προσφορές') {
+//         onOffersLayerAdd();
+//     }
+// });
+
+// map.on('overlayremove', function(eventLayer) {
+//     if (eventLayer.name === 'Προσφορές') {
+//         onOffersLayerRemove();
+//     }
+// });
 
 
-addVehicleWithTasksMarker(38.24, 21.72, 'Vehicle1', 'Φορτίο 1', 'Διαθέσιμο');
-addVehicleWithoutTasksMarker(38.245, 21.725, 'Vehicle2', 'Φορτίο 2', 'Διαθέσιμο');
 
-addLine([[38.245, 21.725], [38.24, 21.72]], 'blue');
-addLine([[38.255, 21.74], [38.25, 21.73]], 'red');
 
 
 

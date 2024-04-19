@@ -1,6 +1,17 @@
 <?php
 // Include your security measures if necessary
 include "security_rescuer.php";
+
+
+// Retrieve JSON data sent from the frontend
+$data = json_decode(file_get_contents("php://input"), true);
+// Check if 'id' parameter is provided in the request body
+if (isset($data['rescuer_name'])) {
+
+
+// Retrieve the rescuer's name from the frontend (assuming it's sent along with the 'id')
+$rescuerName = $data['rescuer_name'];
+
 // Connect to the database
 $conn = mysqli_connect("localhost", "root", "", "help_city1");
 
@@ -9,12 +20,27 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Query to fetch announcements from the database table
-$query = "SELECT * FROM announcements_cityzen";
-$result = $conn->query($query);
+
+
+// Prepare the SQL statement with a placeholder for the rescuer name
+$query = "SELECT * FROM announcements_cityzen WHERE rescuer_name = ?";
+$stmt = $conn->prepare($query);
+
+if (!$stmt) {
+    die("Database query failed " );
+}
+
+// Bind the parameter (rescuer name) to the prepared statement
+$stmt->bind_param("s", $rescuerName);
+
+// Execute the prepared statement
+$stmt->execute();
+
+// Get the result set
+$result = $stmt->get_result();
 
 if (!$result) {
-    die("Database query failed.");
+    die("Error fetching result " );
 }
 
 // Array to store the fetched data
@@ -25,10 +51,18 @@ while ($row = $result->fetch_assoc()) {
     $data[] = $row;
 }
 
+// Close the prepared statement
+$stmt->close();
+
 // Close the database connection
 $conn->close();
 
 // Sending the data as JSON response
 header('Content-Type: application/json');
 echo json_encode($data);
+
+}else {
+    // If 'id' parameter is missing, send an error response
+    echo "Error: ";
+}
 ?>

@@ -65,14 +65,110 @@ echo "<p style=\"font-size: 25pt;\">$myText2</p>";
 include "History_of_help.html";
 
 
+echo "<p style=\"font-size: 25pt;\">MAP</p>";
+
+
+        ?>
+    <div id="map" style="height: 400px;"></div>
+<?php
+
+
 include "log_out.html";
 ?>
 
 
+<!-- Include Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+
+<!-- Include Leaflet Search plugin JavaScript -->
+<script src="https://unpkg.com/leaflet-search"></script>
+<!-- Include Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
 
 
 
 <script>
+
+
+var map = L.map('map').fitWorld();
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    let initialMarkerPosition;
+// Declare LocationMarker variable in the global scope
+let LocationMarker;
+
+
+
+    // Function to handle location found
+function onLocationFound(e) {
+    const radius = e.accuracy / 2;
+    const userLocation = e.latlng;
+
+    // Zoom the map to the user's current location
+    map.setView(userLocation, 15);
+
+    // Optionally, you can add a marker at the user's location
+    L.marker(userLocation).addTo(map)
+        .bindPopup("You are here").openPopup();
+}
+
+// Event listener for location found
+map.on('locationfound', onLocationFound);
+
+// Event listener for location error
+map.on('locationerror', function (e) {
+    console.error(e.message);
+    alert("Location access denied.");
+});
+
+// Request location access
+map.locate({ setView: true, maxZoom: 16 });
+
+
+function fetchAndAddVehicleMarkers() {
+        // Fetch data from PHP script and add markers
+        fetch('show_vehicles_citizen.php')
+          .then(response => response.json())
+          .then(data => {
+            addVehicleMarkers(data);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+        }
+
+// Call the function to fetch data and add markers when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    fetchAndAddVehicleMarkers();
+});
+
+ /// Function to add markers for announcements
+ function addVehicleMarkers(data) {
+    data.forEach(row => {
+        
+        
+  
+        const marker = L.marker([parseFloat(row.latitude), parseFloat(row.longitude)]);
+        
+        // Define popup content with all table info
+        let popupContent = `<br><b>Διασώστης:</b><br><b>Όνοματεπώνυμο:</b> ${row.name}<br><b>Περιεχόμενα:</b> ${row.cargo}<br><b>Κατάσταση:</b> ${row.status}`;
+
+        
+
+
+        marker.bindPopup(popupContent);
+
+         // Add the marker to the map
+         marker.addTo(map);
+       
+    });
+  }
+
+
+
 
 
 

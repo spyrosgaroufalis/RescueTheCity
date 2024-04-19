@@ -2,6 +2,16 @@
 // Include your security measures if necessary
 include "security_rescuer.php";
 
+
+// Retrieve JSON data sent from the frontend
+$data = json_decode(file_get_contents("php://input"), true);
+// Check if 'id' parameter is provided in the request body
+if (isset($data['rescuer_name'])) {
+
+
+// Retrieve the rescuer's name from the frontend (assuming it's sent along with the 'id')
+$rescuerName = $data['rescuer_name'];
+
 // Connect to the database
 $conn = mysqli_connect("localhost", "root", "", "help_city1");
 
@@ -11,21 +21,45 @@ if (!$conn) {
 }
 
 // Fetch latitude and longitude data from the help_offering table
-$sql = "SELECT * FROM help_offering";
-$result = mysqli_query($conn, $sql);
+$query = "SELECT * FROM help_offering WHERE rescuer_name = ?";
+$stmt = $conn->prepare($query);
 
-$data = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $data[] = $row;
-   
+if (!$stmt) {
+    die("Database query failed " );
 }
 
+// Bind the parameter (rescuer name) to the prepared statement
+$stmt->bind_param("s", $rescuerName);
+
+// Execute the prepared statement
+$stmt->execute();
+
+// Get the result set
+$result = $stmt->get_result();
+
+if (!$result) {
+    die("Error fetching result " );
+}
+
+// Array to store the fetched data
+$data = array();
+
+// Fetching rows from the result set
+while ($row = $result->fetch_assoc()) {
+    $data[] = $row;
+}
+
+// Close the prepared statement
+$stmt->close();
+
 // Close the database connection
-mysqli_close($conn);
+$conn->close();
 
-// Set the content type to JSON
+// Sending the data as JSON response
 header('Content-Type: application/json');
-
-// Output the JSON data
 echo json_encode($data);
+}else {
+    // If 'id' parameter is missing, send an error response
+    echo "Error: ";
+}
 ?>
