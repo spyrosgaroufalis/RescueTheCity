@@ -1,0 +1,176 @@
+DROP DATABASE IF EXISTS help;
+CREATE DATABASE help_city1;
+USE help_city1;
+
+CREATE TABLE administrator(
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE categories(
+    id INT(11) NOT NULL PRIMARY KEY,
+    category_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE details(
+    id INT(11) DEFAULT NULL,
+    detail_name VARCHAR(50) NOT NULL,
+    detail_value VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE product(
+    id INT(11) NOT NULL PRIMARY KEY,
+    name VARCHAR(100) DEFAULT NULL,
+    category int(11) DEFAULT NULL,
+    quantity int
+);
+
+CREATE TABLE rescuer(
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE user(
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    phone_num int,
+    location varchar(100)
+);
+
+CREATE TABLE ANNOUNCEMENTS(
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name JSON NOT NULL
+);
+
+CREATE TABLE ANNOUNCEMENTS_cityzen(
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name JSON NOT NULL,
+    have_seen_date DATE,
+    num_people INT(11),
+    accepted VARCHAR(8) DEFAULT 'expected' ,
+    date_of_response date,
+    date_of_comp date,
+    username varchar(50)
+);
+
+CREATE TABLE help_offering(
+    id int NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    accepted VARCHAR(255) DEFAULT 'waiting',
+    id_original INT AUTO_INCREMENT PRIMARY KEY
+);
+
+INSERT INTO administrator (username, password) VALUES ("nikolaos_avgeris","nikosceid");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DROP DATABASE IF EXISTS help;
+CREATE DATABASE help_city1;
+USE help_city1;
+
+
+CREATE TABLE administrator(
+
+    username VARCHAR(50)  NOT NULL,
+    password VARCHAR(50) NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; COLLATE=utf8mb4_general_ci
+
+CREATE TABLE categories(
+    id INT(11) NOT NULL,
+    category_name VARCHAR(50)  NOT NULL,
+    PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; COLLATE=utf8mb4_general_ci
+
+CREATE TABLE details(
+    id INT(11) DEFAULT NULL,
+    detail_name VARCHAR(50) NOT NULL,
+    detail_value VARCHAR(50) NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; COLLATE=utf8mb4_general_ci
+
+CREATE TABLE product(
+    id INT(11) NOT NULL,
+    name VARCHAR(100) DEFAULT NULL,
+    category int(11) DEFAULT NULL,
+    PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; COLLATE=utf8mb4_general_ci
+
+insert into administrator (username, password) values
+                 ("nikolaos_avgeris","nikosceid");
+ALTER TABLE `product`  ADD `quantity`  int ; 
+
+CREATE TABLE rescuer(
+
+    username VARCHAR(50)  NOT NULL,
+    password VARCHAR(50) NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; COLLATE=utf8mb4_general_ci
+
+CREATE TABLE user(
+
+    username VARCHAR(50)  NOT NULL,
+    password VARCHAR(50) NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; COLLATE=utf8mb4_general_ci
+
+ALTER TABLE `user` ADD phone_num int;
+ALTER TABLE `user` ADD location varchar(100);
+
+CREATE TABLE ANNOUNCEMENTS(
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name Json NOT NULL
+    
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `announcements` CHANGE `name` `name` JSON NOT NULL;
+
+CREATE TABLE ANNOUNCEMENTS_cityzen(
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name Json NOT NULL,
+    have_seen_date DATE,
+    num_people INT(11),
+    accepted VARCHAR(8) DEFAULT 'expected' CHECK (accepted IN ('yes', 'no')),
+    date_of_response date,
+    date_of_comp date
+);
+
+CREATE TABLE help_offering(
+
+    id int NOT NULL,
+    username VARCHAR(50)  NOT NULL,
+    password VARCHAR(50) NOT NULL
+);
+
+ALTER TABLE `help_offering` DROP COLUMN  `password`;
+ALTER TABLE `help_offering`
+ADD `accepted` VARCHAR(50); 
+ALTER TABLE `help_offering` MODIFY `accepted` VARCHAR(255) DEFAULT 'waiting'; 
+ALTER TABLE `help_offering`
+ADD COLUMN id_original INT AUTO_INCREMENT PRIMARY KEY; 
+ALTER TABLE `announcements_cityzen`
+ADD `username` varchar(50) ;  

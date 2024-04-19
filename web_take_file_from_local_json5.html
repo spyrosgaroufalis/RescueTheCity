@@ -1,0 +1,24 @@
+
+
+<?--ajax.html-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Async PHP Call</title>
+    <script>
+        function fetchData() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("data").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "web_take_file_from_local_json5.php", true);
+            xhttp.send();
+        }
+    </script>
+</head>
+<body onload="fetchData()">
+    ,!--<div id="data"></div>-->
+</body>
+</html>

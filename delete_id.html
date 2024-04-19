@@ -1,0 +1,33 @@
+<?php
+include"security.php";
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Record</title>
+    <style>
+        /* Style the button */
+        input[type="submit"] {
+            background-color: dodgerblue;
+            color: white;
+            font-size: 1.2em; /* Larger font size */
+            padding: 10px 20px; /* Add some padding for better appearance */
+        }
+
+        /* Style the text input */
+        input[type="number"] {
+            font-size: 1.2em; /* Larger font size */
+            padding: 5px; /* Add some padding for better appearance */
+        }
+    </style>
+</head>
+<body>
+    <h1>Delete Record</h1>
+    <form method="post" action="delete_id.php">
+        <label for="id">Enter ID:</label>
+        <input type="number" name="id" id="id" required>
+        <input type="submit" value="Delete">
+    </form>
+</body>
+</html>

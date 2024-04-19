@@ -1,0 +1,40 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>History_of_help.html</title>
+    <script>
+        function fetchDataAnnouncements1() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("data51").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "show_help_histor_resid.php", true);
+            xhttp.send();
+        }
+
+        function sendAnnouncementId1(id_original) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "delete_help_offer.php", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("id_original=" + id_original);
+        }
+
+        function buttonClicked1(id_original) {
+            var btn1 = document.getElementById('btn1' + id_original);
+            btn1.style.backgroundColor = "purple"; // change color
+            btn1.disabled = true; // disable button
+            sendAnnouncementId1(id_original); // store id
+        }
+
+        // Add an event listener to call fetchDataAnnouncements() when the DOM is loaded
+        document.addEventListener("DOMContentLoaded", fetchDataAnnouncements1);
+    </script>
+</head>
+<body>
+    <div id="data51"></div>
+</body>
+</html>

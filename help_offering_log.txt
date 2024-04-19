@@ -1,0 +1,17 @@
+[2024-04-13 20:42:13] Help offering script started.
+[2024-04-13 20:42:13] Received data: id=4, username=Garou, latitude=38.2271488, longitude=21.725184
+[2024-04-13 20:42:13] Retrieved product names: ["Bread"]
+[2024-04-13 20:42:13] Retrieved product numbers: 3
+[2024-04-13 20:43:32] Help offering script started.
+[2024-04-13 20:43:32] Received data: id=4, username=Garou, latitude=38.2271488, longitude=21.725184
+[2024-04-13 20:43:32] Retrieved product names: ["Bread"]
+[2024-04-13 20:43:32] Retrieved product numbers: 3
+[2024-04-13 20:44:55] Help offering script started.
+[2024-04-13 20:44:55] Received data: id=4, username=Garou, latitude=38.2271488, longitude=21.725184
+[2024-04-13 20:44:55] Retrieved product names: ["Bread"]
+[2024-04-13 20:44:55] Retrieved product numbers: 3
+[2024-04-13 20:45:47] Help offering script started.
+[2024-04-13 20:45:47] Received data: id=4, username=Garou, latitude=38.2271488, longitude=21.725184
+[2024-04-13 20:45:47] Retrieved product names: ["Bread"]
+[2024-04-13 20:45:47] Retrieved product numbers: 3
+[2024-04-13 20:45:47] Record inserted successfully

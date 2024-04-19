@@ -1,0 +1,61 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Quantity</title>
+    <style>
+        /* Style the form - display items horizontally */
+        .form-inline {
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+        }
+        /* Add some margins for each label */
+        .form-inline label {
+            margin-right: 10px;
+        }
+        /* Style the input fields */
+        .form-inline input {
+            vertical-align: middle;
+            margin-right: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        /* Style the submit button */
+        .form-inline button {
+            padding: 10px 20px;
+            background-color: dodgerblue;
+            border: 1px solid #ddd;
+            color: white;
+        }
+        .form-inline button:hover {
+            background-color: royalblue;
+        }
+    </style>
+</head>
+<body>
+    <form class="form-inline" action="insert_rescuer.php" method="post">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" placeholder="Enter username" required>
+
+    <label for="password">New Password:</label>
+    <input type="password" id="password" name="password" placeholder="Enter password" required>
+
+    <button type="submit">Insert</button>
+</form>
+
+<form class="form-inline" action="delete_rescuer.php" method="post">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" placeholder="Enter username" required>
+
+    <button type="submit">Delete</button>
+</form>
+
+
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+
+<?--show_announcement.html-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Async PHP Call Announcements</title>
+    <script>
+        function fetchDataAnnouncements() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("data1").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "show_announcements.php", true);
+            xhttp.send();
+        }
+        
+        // Add an event listener to call fetchDataAnnouncements() when the DOM is loaded
+        document.addEventListener("DOMContentLoaded", fetchDataAnnouncements);
+    </script>
+</head>
+<body>
+    <div id="data1"></div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>show_announcements_resid.html</title>
+    <script>
+        function fetchDataAnnouncements() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("data5").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "show_announcements_resid.php", true);
+            xhttp.send();
+        }
+
+        function sendAnnouncementId(id) {
+            // Fetch geolocation
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var latitude = position.coords.latitude;
+                    var longitude = position.coords.longitude;
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("POST", "help_offering.php", true);
+                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    xhttp.send("id=" + id + "&latitude=" + latitude + "&longitude=" + longitude);
+                }, function(error) {
+                    console.error('Error getting geolocation:', error);
+                });
+            } else {
+                console.error('Geolocation is not supported by this browser.');
+            }
+        }
+
+        function buttonClicked(id) {
+            var btn = document.getElementById('btn' + id);
+            btn.style.backgroundColor = "purple"; // change color
+            btn.disabled = true; // disable button
+            sendAnnouncementId(id); // store id
+        }
+
+        // Add an event listener to call fetchDataAnnouncements() when the DOM is loaded
+        document.addEventListener("DOMContentLoaded", fetchDataAnnouncements);
+    </script>
+</head>
+<body>
+    <div id="data5"></div>
+</body>
+</html>
