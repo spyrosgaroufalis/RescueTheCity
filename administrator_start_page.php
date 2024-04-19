@@ -267,32 +267,32 @@ function onLocationFound(e) {
     const locationMarker = L.marker(e.latlng, { draggable: false }).addTo(map);
     locationMarker.bindPopup("<b>Your location</b>").openPopup();
 
-    const locationCircle = L.circle(e.latlng, radius).addTo(map);
-    markersLayer.addLayer(locationMarker);
+    // const locationCircle = L.circle(e.latlng, radius).addTo(map);
+    // markersLayer.addLayer(locationMarker);
 
    
 
 
 
 
-    // Fetch vehicle data from the database (using AJAX)
-    fetch('get_vehicle_data.php')
-    .then(response => response.json())
-    .then(data => {
-        data.forEach(vehicle => {
-            const vehicleMarker = L.marker([vehicle.latitude, vehicle.longitude]).addTo(map);
-            const popupContent = `
+    // // Fetch vehicle data from the database (using AJAX)
+    // fetch('get_vehicle_data.php')
+    // .then(response => response.json())
+    // .then(data => {
+    //     data.forEach(vehicle => {
+    //         const vehicleMarker = L.marker([vehicle.latitude, vehicle.longitude]).addTo(map);
+    //         const popupContent = `
                
-                <b>Name:</b> ${vehicle.name}<br>
-                <b>Cargo:</b> ${vehicle.cargo}<br>
-                <b>Status:</b> ${vehicle.status}<br>
-            `;
-            vehicleMarker.bindPopup(popupContent);
-        });
-    })
-    .catch(error => {
-        console.error('Error fetching vehicle data:', error);
-    });
+    //             <b>Name:</b> ${vehicle.name}<br>
+    //             <b>Cargo:</b> ${vehicle.cargo}<br>
+    //             <b>Status:</b> ${vehicle.status}<br>
+    //         `;
+    //         vehicleMarker.bindPopup(popupContent);
+    //     });
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching vehicle data:', error);
+    // });
 
      // Retrieve base marker position from the database (using AJAX)
     fetch('get_base_marker_position.php')
@@ -397,19 +397,6 @@ function confirmMarkerMovement(marker) {
     }
 }
 
-
-
-    // Function to generate a random LatLng within a given radius from a center point
-    function getRandomLatLng(center, distance) {
-        const randomAngle = Math.random() * Math.PI * 2;
-        const distanceInDegrees = distance / (111 * 1000); // 1 degree is approximately 111 kilometers
-
-        const deltaX = distanceInDegrees * Math.cos(randomAngle);
-        const deltaY = distanceInDegrees * Math.sin(randomAngle);
-
-        return L.latLng(center.lat + deltaX, center.lng + deltaY);
-    }
-
     
  
 
@@ -424,11 +411,77 @@ function fetchAndAddMarkers() {
         console.error('Error fetching help offering data:', error);
     });
 }
+// Fetch data from PHP script and add markers
+function fetchAndAddMarkers2() {
+    fetch('get_help_offering_data.php')
+    .then(response => response.json())
+    .then(data => {
+        addHelpOfferingMarkers2(data);
+    })
+    .catch(error => {
+        console.error('Error fetching help offering data:', error);
+    });
+}
 
+
+function fetchAndAddReqMarkers() {
+    // Fetch data from PHP script and add markers
+    fetch('show_announcements_admin_wanted.php')
+      .then(response => response.json())
+      .then(data => {
+          addAnnouncementMarkers(data);
+      })
+      .catch(error => {
+          console.error('Error fetching data:', error);
+      });
+    }
+
+    function fetchAndAddVehicleMarkers() {
+        // Fetch data from PHP script and add markers
+        fetch('show_active_vehicles.php')
+          .then(response => response.json())
+          .then(data => {
+            addVehicleMarkers(data);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+        }
+
+        function fetchAndAddVehicleMarkers2() {
+            // Fetch data from PHP script and add markers
+            fetch('show_inactive_vehicles.php')
+              .then(response => response.json())
+              .then(data => {
+                addVehicleMarkers2(data);
+              })
+              .catch(error => {
+                  console.error('Error fetching data:', error);
+              });
+            }
+
+
+    function fetchAndAddReqMarkers2() {
+        // Fetch data from PHP script and add markers
+        fetch('show_announcements_admin_wanted.php')
+          .then(response => response.json())
+          .then(data => {
+              addAnnouncementMarkers2(data);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+        }
+
+    
 // Call the function to fetch data and add markers when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     fetchAndAddMarkers();
+    fetchAndAddMarkers2();
     fetchAndAddReqMarkers();
+    fetchAndAddReqMarkers2();
+    fetchAndAddVehicleMarkers();
+    fetchAndAddVehicleMarkers2();
 });
 
 // Toggle the visibility of the offers layer group based on user interaction
@@ -440,17 +493,6 @@ function toggleOffersLayer() {
     }
 }
 
-function fetchAndAddReqMarkers() {
-// Fetch data from PHP script and add markers
-fetch('show_announcements_admin_wanted.php')
-  .then(response => response.json())
-  .then(data => {
-      addAnnouncementMarkers(data);
-  })
-  .catch(error => {
-      console.error('Error fetching data:', error);
-  });
-}
 
 
 // Toggle the visibility of the offers layer group based on user interaction
@@ -463,23 +505,46 @@ function toggleReqLayer() {
     }
 }
 
-
-
-
-
-
-
-    // Function to create a vehicle popup content
-    function createVehiclePopup(e, username, cargo, status, hasTasks) {
-        let popupContent = "<b>Vehicles</b><br>";
-        popupContent += "Username: " + username + "<br>";
-        popupContent += "Cargo: " + cargo + "<br>";
-        popupContent += "Status: " + status + "<br>";
-        if (hasTasks) {
-            popupContent += "There are active tasks<br>";
-        }
-        return popupContent;
+// Toggle the visibility of the offers layer group based on user interaction
+function toggleReqLayer2() {
+    if (map.hasLayer(requestsLayer2)) {
+        map.removeLayer(requestsLayer2);
+    } else {
+        map.addLayer(requestsLayer2);
+       
     }
+}
+
+
+
+// Toggle the visibility of the offers layer group based on user interaction
+function toggleOffersLayer2() {
+    if (map.hasLayer(offersLayer2)) {
+        map.removeLayer(offersLayer2);
+    } else {
+        map.addLayer(offersLayer2);
+    }
+}
+
+// Toggle the visibility of the offers layer group based on user interaction
+function toggleVehicleLayer() {
+    if (map.hasLayer(vehiclesWithTasksLayer)) {
+        map.removeLayer(vehiclesWithTasksLayer);
+    } else {
+        map.addLayer(vehiclesWithTasksLayer);
+    }
+}
+
+// Toggle the visibility of the offers layer group based on user interaction
+function toggleVehicleLayer2() {
+    if (map.hasLayer(vehiclesWithoutTasksLayer)) {
+        map.removeLayer(vehiclesWithoutTasksLayer);
+    } else {
+        map.addLayer(vehiclesWithoutTasksLayer);
+    }
+}
+
+
 
     // Function to handle location error
     function onLocationError(e) {
@@ -495,20 +560,17 @@ function toggleReqLayer() {
         const userInput = document.getElementById(`userInput-${lat}-${lng}`).value;
         console.log(`User input for marker at ${lat}, ${lng}: ${userInput}`);
         
-        }
+    }
 
 // Create layer groups
 const requestsLayer = L.layerGroup();
+const requestsLayer2 = L.layerGroup();
 const offersLayer = L.layerGroup();
+const offersLayer2 = L.layerGroup();
 const vehiclesWithTasksLayer = L.layerGroup();
 const vehiclesWithoutTasksLayer = L.layerGroup();
 const linesLayer = L.layerGroup();
 const linesLayer2 = L.layerGroup();
-
-
-
-
-
 
 
 
@@ -549,8 +611,10 @@ const goldIcon = L.icon({
 
 // Add layers to the map
 const layerControl = L.control.layers(null, {
-  'Αιτήματα': requestsLayer,
-  'Προσφορές': offersLayer,
+  'Αιτήματα, αιτήματα ενεργά': requestsLayer,
+  'Αιτήματα ολοκληρωμένα': requestsLayer2,
+  'Προσφορές, προσφορές ενεργές': offersLayer,
+  'Προσφορές ολοκληρωμένες': offersLayer2,
   'Οχήματα με Tasks': vehiclesWithTasksLayer,
   'Οχήματα χωρίς Tasks': vehiclesWithoutTasksLayer,
   'Ευθείες Γραμμές Ενεργών Task': linesLayer,
@@ -619,78 +683,8 @@ fetch('fetch_polylines2.php')
     
 // Add example markers and lines
 
-// Function to add markers for help offerings
-function addHelpOfferingMarkers(data) {
-    data.forEach(item => {
-        let customIcon = YellowIcon; // Default color is red
-        if (item.accepted === 'received') {
-            customIcon = GreenIcon; // Green marker for status "expected"
-        }
-        else if (item.accepted === 'expected') {
-            customIcon = YellowIcon; // Green marker for status "expected"
-        }
-        else if (item.accepted === 'waiting') {
-            customIcon = PurpleIcon; // Red marker for status "not_expected"
-        }
-
-        const marker = L.marker([parseFloat(item.latitude), parseFloat(item.longitude)], { icon: customIcon });
-        
-        // Define popup content with all table info
-        let popupContent = `<br><b>ΠΡΟΣΦΟΡΑ:</b><br><b>Όνοματεπώνυμο:</b> ${item.username}<br><b>Τηλέφωνο:</b> ${item.phone_num}<br><b>Ημερομηνία καταχώρησης:</b> ${item.date}<br><b>Όνομα προιόντος:</b> ${item.product_name}<br><b>Απαιτούμενο νούμερο:</b> ${item.product_num}`;
-
-        
-            if (item.accepted === 'received') {
-                    popupContent += `<br><b>Ημερομηνία ανάληψης από όχημα:</b> ${item.date_of_comp}`;
-                    popupContent += `<br><b>Όνομα Διασώστη:</b> ${item.rescuer_name}`;
-
-            }
-
-        marker.bindPopup(popupContent);
-        marker.addTo(offersLayer); // Add marker to the offers layer group
-    });
-}
-
-/// Function to add markers for announcements
-function addAnnouncementMarkers(data) {
-    data.forEach(row => {
-        let markerIcon = redIcon; // Default color is red
-        if (row.accepted === 'expected') {
-            markerIcon = redIcon; // Green marker for status "expected"
-        } else if (row.accepted === 'not_expected') {
-            markerIcon = greenIcon; // Red marker for status "not_expected"
-        }
-        else if (row.accepted === 'waiting') {
-          markerIcon = goldIcon; // Red marker for status "not_expected"
-      }
-  
-        // Fetch phone number from the "user" table based on the username
-        fetch(`get_phone_number.php?username=${row.username}`)
-            .then(response => response.text())
-            .then(phoneNumber => {
-                const marker = L.marker([row.lat_cit, row.lon_cit], { icon: markerIcon }).addTo(map);
-                let popupContent = `<br><b>ΑΙΤΗΜΑ:</b><br><b>Username:</b> ${row.username}<br><b>Phone Number:</b> ${phoneNumber}<br><b>Register Date:</b> ${row.have_seen_date}<br><b>Name:</b> ${row.name}<br><b>Number:</b> ${row.numProducts}<br><b>Date of Completion:</b> ${row.date_of_comp}`;
-                // Add button based on accepted status
-                if (row.accepted === 'not_expected') {
-                  popupContent += `<br><b>Rescuer Username:</b> ${row.rescuer_name}`;
-  
-              }
-                
-                marker.bindPopup(popupContent);
-              
-               // Add marker to helpOfferingsLayer
-               marker.addTo(requestsLayer);
-              })
-               
-  
-            .catch(error => {
-                console.error('Error fetching phone number:', error);
-            });
-    });
-  }
-
-
- // Define a green marker icon
- const YellowIcon = L.icon({
+// Define a green marker icon
+const YellowIcon = L.icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
     iconSize: [25, 41],
@@ -718,6 +712,189 @@ const PurpleIcon = L.icon({
     shadowSize: [41, 41]
 });
 
+
+
+
+// Function to add markers for help offerings
+function addHelpOfferingMarkers(data) {
+    data.forEach(item => {
+        let customIcon = YellowIcon; // Default color is red
+        if (item.accepted === 'received') {
+           return;
+        }
+        else if (item.accepted === 'expected') {
+            customIcon = YellowIcon; // Green marker for status "expected"
+        }
+        else if (item.accepted === 'waiting') {
+            customIcon = PurpleIcon; // Red marker for status "not_expected"
+        }
+
+        const marker = L.marker([parseFloat(item.latitude), parseFloat(item.longitude)], { icon: customIcon });
+        
+        // Define popup content with all table info
+        let popupContent = `<br><b>ΠΡΟΣΦΟΡΑ:</b><br><b>Όνοματεπώνυμο:</b> ${item.username}<br><b>Τηλέφωνο:</b> ${item.phone_num}<br><b>Ημερομηνία καταχώρησης:</b> ${item.date}<br><b>Όνομα προιόντος:</b> ${item.product_name}<br><b>Απαιτούμενο νούμερο:</b> ${item.product_num}`;
+
+        
+            if (item.accepted === 'received') {
+                    popupContent += `<br><b>Ημερομηνία ανάληψης από όχημα:</b> ${item.date_of_comp}`;
+                    popupContent += `<br><b>Όνομα Διασώστη:</b> ${item.rescuer_name}`;
+
+            }
+
+        marker.bindPopup(popupContent);
+        marker.addTo(offersLayer); // Add marker to the offers layer group
+    });
+}
+
+// Function to add markers for help offerings
+function addHelpOfferingMarkers2(data) {
+    data.forEach(item => {
+        let customIcon = YellowIcon; // Default color is red
+        if (item.accepted === 'received') {
+            customIcon = GreenIcon; // Green marker for status "expected"
+        }
+        else if (item.accepted === 'expected') {
+           return;
+        }
+        else if (item.accepted === 'waiting') {
+            return;
+        }
+
+        const marker = L.marker([parseFloat(item.latitude), parseFloat(item.longitude)], { icon: customIcon });
+        
+        // Define popup content with all table info
+        let popupContent = `<br><b>ΠΡΟΣΦΟΡΑ:</b><br><b>Όνοματεπώνυμο:</b> ${item.username}<br><b>Τηλέφωνο:</b> ${item.phone_num}<br><b>Ημερομηνία καταχώρησης:</b> ${item.date}<br><b>Όνομα προιόντος:</b> ${item.product_name}<br><b>Απαιτούμενο νούμερο:</b> ${item.product_num}`;
+
+        
+            if (item.accepted === 'received') {
+                    popupContent += `<br><b>Ημερομηνία ανάληψης από όχημα:</b> ${item.date_of_comp}`;
+                    popupContent += `<br><b>Όνομα Διασώστη:</b> ${item.rescuer_name}`;
+
+            }
+
+        marker.bindPopup(popupContent);
+        marker.addTo(offersLayer2); // Add marker to the offers layer group
+    });
+}
+
+/// Function to add markers for announcements
+function addAnnouncementMarkers(data) {
+    data.forEach(row => {
+        let markerIcon = redIcon; // Default color is red
+        if (row.accepted === 'expected') {
+            markerIcon = redIcon; // Green marker for status "expected"
+        } else if (row.accepted === 'not_expected') {
+           return;
+        }
+        else if (row.accepted === 'waiting') {
+          markerIcon = goldIcon; // Red marker for status "not_expected"
+      }
+  
+        // Fetch phone number from the "user" table based on the username
+        fetch(`get_phone_number.php?username=${row.username}`)
+            .then(response => response.text())
+            .then(phoneNumber => {
+                const marker = L.marker([row.lat_cit, row.lon_cit], { icon: markerIcon });
+                let popupContent = `<br><b>ΑΙΤΗΜΑ:</b><br><b>Username:</b> ${row.username}<br><b>Phone Number:</b> ${phoneNumber}<br><b>Register Date:</b> ${row.have_seen_date}<br><b>Name:</b> ${row.name}<br><b>Number:</b> ${row.numProducts}<br><b>Date of Completion:</b> ${row.date_of_comp}`;
+                // Add button based on accepted status
+                if (row.accepted === 'not_expected') {
+                  popupContent += `<br><b>Rescuer Username:</b> ${row.rescuer_name}`;
+  
+              }
+                
+                marker.bindPopup(popupContent);
+              
+               // Add marker to helpOfferingsLayer
+               marker.addTo(requestsLayer);
+              })
+               
+  
+            .catch(error => {
+                console.error('Error fetching phone number:', error);
+            });
+    });
+  }
+
+  /// Function to add markers for announcements
+function addAnnouncementMarkers2(data) {
+    data.forEach(row => {
+        let markerIcon = redIcon; // Default color is red
+        if (row.accepted === 'expected') {
+            return;
+        } else if (row.accepted === 'not_expected') {
+            markerIcon = greenIcon; // Red marker for status "not_expected"
+        }
+        else if (row.accepted === 'waiting') {
+         return;
+      }
+  
+        // Fetch phone number from the "user" table based on the username
+        fetch(`get_phone_number.php?username=${row.username}`)
+            .then(response => response.text())
+            .then(phoneNumber => {
+                const marker = L.marker([row.lat_cit, row.lon_cit], { icon: markerIcon });
+                let popupContent = `<br><b>ΑΙΤΗΜΑ:</b><br><b>Username:</b> ${row.username}<br><b>Phone Number:</b> ${phoneNumber}<br><b>Register Date:</b> ${row.have_seen_date}<br><b>Name:</b> ${row.name}<br><b>Number:</b> ${row.numProducts}<br><b>Date of Completion:</b> ${row.date_of_comp}`;
+                // Add button based on accepted status
+                if (row.accepted === 'not_expected') {
+                  popupContent += `<br><b>Rescuer Username:</b> ${row.rescuer_name}`;
+  
+              }
+                
+                marker.bindPopup(popupContent);
+              
+               // Add marker to helpOfferingsLayer
+               marker.addTo(requestsLayer2);
+              })
+               
+  
+            .catch(error => {
+                console.error('Error fetching phone number:', error);
+            });
+    });
+  }
+
+    /// Function to add markers for announcements
+function addVehicleMarkers(data) {
+    data.forEach(row => {
+        let markerIcon = goldIcon; // Default color is red
+        
+  
+        const marker = L.marker([parseFloat(row.latitude), parseFloat(row.longitude)], { icon: markerIcon });
+        
+        // Define popup content with all table info
+        let popupContent = `<br><b>Διασώστης:</b><br><b>Όνοματεπώνυμο:</b> ${row.name}<br><b>Περιεχόμενα:</b> ${row.cargo}<br><b>Κατάσταση:</b> ${row.status}`;
+
+        
+
+
+        marker.bindPopup(popupContent);
+        marker.addTo(vehiclesWithTasksLayer); // Add marker to the offers layer group
+
+    });
+  }
+
+   /// Function to add markers for announcements
+function addVehicleMarkers2(data) {
+    data.forEach(row => {
+        
+        
+  
+        const marker = L.marker([parseFloat(row.latitude), parseFloat(row.longitude)]);
+        
+        // Define popup content with all table info
+        let popupContent = `<br><b>Διασώστης:</b><br><b>Όνοματεπώνυμο:</b> ${row.name}<br><b>Περιεχόμενα:</b> ${row.cargo}<br><b>Κατάσταση:</b> ${row.status}`;
+
+        
+
+
+        marker.bindPopup(popupContent);
+        marker.addTo(vehiclesWithoutTasksLayer); // Add marker to the offers layer group
+
+    });
+  }
+
+
+ 
 
 
 
