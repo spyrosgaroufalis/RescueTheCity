@@ -14,6 +14,9 @@ include "security.php";
 <head>
     <title>Async PHP Call</title>
 
+    // <!-- Link to your external CSS file -->
+    // <link rel="stylesheet" href="styles.css">
+
     <!-- Include Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
     <!-- Include Chart.js -->
@@ -124,6 +127,11 @@ function handleDateRangeSelection() {
 
         
     </script>
+
+
+    
+
+
 </head>
 <body onload="fetchData()">
 
@@ -179,29 +187,7 @@ echo "<p style=\"font-size:25pt;\">map and statistics</p>";
 
     <div id="map" style="height: 400px;"></div>
 
-    <div id="status-table-container">
-        <h2>Προβολή κατάστασης αποθήκης</h2>
-        <table id="status-table">
-          <thead>
-            <tr>
-              <th>Κατηγορία</th>
-              <th>Ποσότητα</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Εδώ μπορείτε να προσθέσετε τα δεδομένα του πίνακα δυναμικά -->
-            <tr>
-              <td>Κατηγορία 1</td>
-              <td>Ποσότητα 1</td>
-            </tr>
-            <tr>
-              <td>Κατηγορία 2</td>
-              <td>Ποσότητα 2</td>
-            </tr>
-            <!-- ... -->
-          </tbody>
-        </table>
-      </div>
+    
     
       <div id="statistics-chart-container">
       <h2>Στατιστικά Εξυπηρέτησης</h2>
@@ -239,6 +225,31 @@ echo "<p style=\"font-size:25pt;\">map and statistics</p>";
 
 
 <script>
+
+// window.addEventListener('scroll', function() {
+//     // Calculate the percentage of how much the user has scrolled
+//     const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+//     // Interpolate between white (#ffffff) and light blue (#add8e6)
+//     const interpolatedColor = interpolateColors('#ffffff', '#add8e6', scrolled);
+//     // Set the background color
+//     document.body.style.background = interpolatedColor;
+// });
+
+// function interpolateColors(color1, color2, factor) {
+//     if (factor === 0) return color1;
+//     if (factor === 1) return color2;
+
+//     const result = color1.split('').map((char, i) => {
+//         const val1 = parseInt(char, 16);
+//         const val2 = parseInt(color2[i], 16);
+//         const delta = val2 - val1;
+//         return Math.round(val1 + delta * factor).toString(16);
+//     });
+//     return `#${result.join('')}`;
+// }
+
+
+
     var map = L.map('map').fitWorld();
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -402,7 +413,7 @@ function confirmMarkerMovement(marker) {
 
 // Fetch data from PHP script and add markers
 function fetchAndAddMarkers() {
-    fetch('get_help_offering_data.php')
+    fetch('get_help_offering_data_admin.php')
     .then(response => response.json())
     .then(data => {
         addHelpOfferingMarkers(data);
@@ -413,7 +424,7 @@ function fetchAndAddMarkers() {
 }
 // Fetch data from PHP script and add markers
 function fetchAndAddMarkers2() {
-    fetch('get_help_offering_data.php')
+    fetch('get_help_offering_data_admin.php')
     .then(response => response.json())
     .then(data => {
         addHelpOfferingMarkers2(data);
